@@ -1,0 +1,46 @@
+package firstimport
+
+import first.SafeThreadAddList
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.test.assertEquals
+
+class TestExecutor {
+
+    fun executeAndMeasureParallel(iterations: Int, threadCount: Int): Long {
+        val list = SafeThreadAddList<Int>()
+        val service: ExecutorService = Executors.newFixedThreadPool(threadCount)
+
+        return measure {
+            (1..iterations).forEach {
+                service.submit { list.addSafe(1) }
+            }
+            service.shutdown()
+            while (!service.isTerminated) { }
+        }
+
+    }
+
+    fun executeAndMeasureNormal(iterations: Int): Long {
+
+        val list = SafeThreadAddList<Int>()
+
+        val time = measure {
+            (1..iterations).forEach {
+                list.add(1)
+            }
+        }
+
+        assertEquals(iterations, list.size)
+
+        return time
+
+    }
+
+    private fun measure(function: () -> Unit): Long {
+        val before = System.nanoTime()
+        function.invoke()
+        return System.nanoTime() - before
+    }
+
+}
