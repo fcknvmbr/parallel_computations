@@ -7,7 +7,7 @@ class SafeThreadAddList<in T> {
     private var last: Node<T>? = null
     private var first: Node<T>? = null
 
-    data class Node<E> (var item: E?, var next: Node<E>?)
+    data class Node<E> (var item: E?, var next: Node<E>? = null)
 
     fun addSafe(element: T) = synchronized(this@SafeThreadAddList, {
         if (size == 0) { linkFirst(element) } else { linkLast(element) }
@@ -16,14 +16,14 @@ class SafeThreadAddList<in T> {
     fun add(element: T) = if (size == 0) { linkFirst(element) } else { linkLast(element) }
 
     private fun linkFirst(element: T) {
-        val newNode = Node(item = element, next = null)
+        val newNode = Node(item = element)
         first = newNode
         last = newNode
         size++
     }
 
     private fun linkLast(element: T) {
-        val newNode = Node(item = element, next = null)
+        val newNode = Node(item = element)
         last?.next = newNode
         last = newNode
         size++

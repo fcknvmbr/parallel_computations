@@ -46,7 +46,6 @@ class Trainer(private val perceptron: Perceptron, private val threadsCount: Int 
     }
 
     private fun propagateError(target: DoubleArray) {
-
         errorSignal.clear()
 
         perceptron.layers.last().neurons.forEachIndexed { index, neuron ->
@@ -62,11 +61,9 @@ class Trainer(private val perceptron: Perceptron, private val threadsCount: Int 
                 } * neuron.derivative
             }
         }
-
     }
 
-    private fun updateWeights(rate: Double) {
-
+    private fun updateWeights(rate: Double) =
         perceptron.layers.forEach { layer ->
             layer.neurons.forEach { neuron ->
                 errorSignal[neuron]?.let {
@@ -78,23 +75,4 @@ class Trainer(private val perceptron: Perceptron, private val threadsCount: Int 
                 }
             }
         }
-
-    }
 }
-
-//        trainData.forEach { data ->
-//
-//            val output = perceptron.activate(data.input)
-//
-//            val mse = meanSquaredError(output, data.targetOutput)
-//
-//            val outputAsString = output.joinToString(", ", "[", "]") { format("%.2f", it) }
-//
-//            println("$outputAsString: $mse")
-//
-//        }
-
-//fun meanSquaredError(actual: DoubleArray, target: DoubleArray): Double {
-//    val sum = target.indices.sumByDouble { Math.pow(target[it] - actual[it], 2.0) }
-//    return sum / target.size.toDouble()
-//}
